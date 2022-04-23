@@ -11,7 +11,7 @@ h1 {
 #math {
   width: calc(100% - 16px);
   height: calc(1em + 4px);
-  resize: vertical;
+  resize: none;
   padding: 8px;
   border: none;
   border-radius: 5px;
@@ -19,24 +19,40 @@ h1 {
   font-family: inherit;
   background-color: #222;
   color: inherit;
+
+  &:focus {
+    outline: 1px solid #aaa;
+  }
 }
 
 .answer {
+  position: relative;
+
   #answer {
-    padding: 0.2em;
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 5px;
     font-size: 20px;
-    border-radius: 0.2em;
     background-color: #222;
 
     &:empty::before {
       content: "...";
+      opacity: 0.5;
     }
   }
 
   #error {
-    color: #faa;
-    background-color: initial;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-style: italic;
   }
+}
+
+#error {
+  color: #faa;
+  background-color: initial;
 }
 
 #output {
