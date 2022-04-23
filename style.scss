@@ -8,51 +8,100 @@ h1 {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-#math {
-  width: calc(100% - 16px);
-  height: calc(1em + 4px);
-  resize: none;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-  font-size: 20px;
-  font-family: inherit;
-  background-color: #222;
-  color: inherit;
+.contain {
+  width: 300px;
 
-  &:focus {
-    outline: 1px solid #aaa;
-  }
-}
-
-.answer {
-  position: relative;
-
-  #answer {
-    margin-bottom: 5px;
+  #math {
+    width: calc(100% - 16px);
+    height: calc(1em + 4px);
+    resize: none;
     padding: 8px;
+    border: none;
     border-radius: 5px;
     font-size: 20px;
+    font-family: inherit;
     background-color: #222;
+    color: inherit;
 
-    &:empty::before {
-      content: "...";
-      opacity: 0.5;
+    &:focus {
+      outline: 1px solid #aaa;
     }
   }
 
-  #error {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-style: italic;
-  }
-}
+  .answer {
+    position: relative;
 
-#error {
-  color: #faa;
-  background-color: initial;
+    #answer {
+      margin-bottom: 5px;
+      padding: 8px;
+      border-radius: 5px;
+      font-size: 20px;
+      background-color: #222;
+
+      &:empty::before {
+        content: "...";
+        opacity: 0.5;
+      }
+    }
+
+    #error {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 70%;
+      font-style: italic;
+      background-color: initial;
+      color: #faa;
+
+      &:not(:empty) ~ #answer {
+        color: #888;
+      }
+    }
+  }
+
+  #buttons {
+    margin-top: 5px;
+
+    article {
+      display: inline-block;
+      border: none;
+      margin: 0;
+      color: white;
+      width: calc(23%);
+      aspect-ratio: 1/1;
+      padding: 1%;
+
+      button {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border: none;
+        border-radius: 5px;
+        font-size: 20px;
+        background-color: #1a1a1a;
+        color: inherit;
+
+        &:empty {
+          transform: translateY(-8px);
+          background-color: #161616;
+        }
+
+        &.number {
+          background-color: #222;
+        }
+
+        &:not(:empty) {
+          &:hover {
+            filter: brightness(120%);
+          }
+
+          &:active {
+            filter: brightness(140%);
+          }
+        }
+      }
+    }
+  }
 }
 
 #output {

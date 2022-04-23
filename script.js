@@ -1,6 +1,60 @@
+const buttons = [
+  "(",
+  ")",
+  ["C", () => erase(), "Clear All"],
+  ["🅇", () => backspace(), "Backspace"],
+  7,
+  8,
+  9,
+  ["×", "*"],
+  4,
+  5,
+  6,
+  "-",
+  1,
+  2,
+  3,
+  "+",
+  ".",
+  0,
+  null,
+  null,
+];
+
 function init() {
   $("#math").text("");
   run();
+
+  $("#buttons").html(
+    buttons.map((item, i) => {
+      var text, method, title;
+      if (item === null) {
+        text = "";
+        method = null;
+      } else if (typeof item === "object") {
+        text = item[0];
+        method = item[1] || text;
+        title = item[2];
+      } else {
+        text = item;
+        method = text;
+      }
+
+      if (method !== null) {
+        if (typeof method === "function") {
+          method = method.toString().slice(6);
+        } else {
+          method = `concat('${method}')`;
+        }
+      }
+
+      var isNumber = typeof text === "number" ? "number" : "";
+
+      return `<article><button onclick="${method}; run()" title="${
+        title || ""
+      }" class="${isNumber}">${text}</button></article>`;
+    }),
+  );
 }
 
 // Solve given equation
@@ -229,4 +283,15 @@ function parse(string, iter) {
     throw "Open bracket mismatch";
   }
   return { tree: order(tree), index: -1 };
+}
+
+// Button functions
+function concat(char) {
+  $("#math").val($("#math").val() + char);
+}
+function erase() {
+  $("#math").val("");
+}
+function backspace() {
+  $("#math").val($("#math").val().slice(0, -1));
 }
