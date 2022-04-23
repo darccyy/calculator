@@ -1,0 +1,40 @@
+body {
+  background-color: #111;
+  color: white;
+  font-family: "Courier New", Courier, monospace;
+}
+
+h1 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#math {
+  width: calc(100% - 16px);
+  height: calc(1em + 4px);
+  resize: vertical;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  font-family: inherit;
+  background-color: #222;
+  color: inherit;
+}
+
+.answer #answer {
+  padding: 0.2em;
+  font-size: 20px;
+  border-radius: 0.2em;
+  background-color: #222;
+}
+.answer #answer:empty::before {
+  content: "...";
+}
+.answer #error {
+  color: #faa;
+  background-color: initial;
+}
+
+#output {
+  font-size: 10px;
+}

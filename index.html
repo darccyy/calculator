@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Calculator</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta content="utf-8" http-equiv="encoding" />
+
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+
+    <script
+      type="text/javascript"
+      src="https://fortissimojs.github.io/index.vanilla.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://code.jquery.com/jquery-latest.min.js"
+    ></script>
+    <script type="text/javascript" src="./script.js"></script>
+  </head>
+  <body onload="init()">
+    <h1 title="Now with order of operations!">Calculator</h1>
+
+    <p class="answer">
+      <code id="answer" title="The answer!"></code>
+      <span id="error" title="Uh oh! An oopsie!"></span>
+    </p>
+
+    <textarea
+      id="math"
+      oninput="run()"
+      autofocus
+      placeholder="Enter equation"
+      title="Type an equation!"
+    ></textarea>
+
+    <pre id="output"></pre>
+  </body>
+</html>
