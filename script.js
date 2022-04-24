@@ -81,7 +81,7 @@ function run() {
   }
 
   // True mathematics
-  if (math.split(/\(|\)| /).join("") === "2+2") {
+  if (math.split(/\(|\)| |\n/).join("") === "2+2") {
     $("#output").text("Trust me.");
     $("#answer").text(5);
     return;
