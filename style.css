@@ -2,10 +2,6 @@
 body {
   background-color: #111;
   color: white;
-  font-family: "Courier New", Courier, monospace;
-}
-
-h1 {
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -13,6 +9,13 @@ h1 {
   width: 300px;
   background-color: #333;
   border-radius: 10px;
+  font-family: "Courier New", Courier, monospace;
+  margin-right: 5px;
+}
+@media (min-width: 500px) {
+  .calculator {
+    float: left;
+  }
 }
 .calculator .top {
   font-size: 25px;
@@ -94,13 +97,37 @@ h1 {
 .calculator #buttons article button.number {
   background-color: #222;
 }
-.calculator #buttons article button:not(:empty):hover {
+.calculator #buttons article button.blank {
+  visibility: hidden;
+}
+.calculator #buttons article button:hover {
   filter: brightness(120%);
 }
-.calculator #buttons article button:not(:empty):active {
+.calculator #buttons article button:active {
   filter: brightness(140%);
 }
 
 #output {
   font-size: 10px;
+  font-family: "Courier New", Courier, monospace;
+}
+#output:not(:empty)::before {
+  content: "Source: ";
+}
+
+.footer {
+  position: fixed;
+  display: inline-block;
+  bottom: 10px;
+  right: 10px;
+  padding: 7px;
+  border-radius: 10px;
+  background-color: #0a0a0aaa;
+  color: #ddd;
+}
+.footer:not(:hover) {
+  text-decoration: none;
+}
+.footer:focus-visible {
+  outline: 2px solid white;
 }

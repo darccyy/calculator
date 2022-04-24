@@ -1,10 +1,6 @@
 body {
   background-color: #111;
   color: white;
-  font-family: "Courier New", Courier, monospace;
-}
-
-h1 {
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -12,6 +8,12 @@ h1 {
   width: 300px;
   background-color: #333;
   border-radius: 10px;
+  font-family: "Courier New", Courier, monospace;
+  margin-right: 5px;
+
+  @media (min-width: 500px) {
+    float: left;
+  }
 
   .top {
     font-size: 25px;
@@ -105,14 +107,16 @@ h1 {
           background-color: #222;
         }
 
-        &:not(:empty) {
-          &:hover {
-            filter: brightness(120%);
-          }
+        &.blank {
+          visibility: hidden;
+        }
 
-          &:active {
-            filter: brightness(140%);
-          }
+        &:hover {
+          filter: brightness(120%);
+        }
+
+        &:active {
+          filter: brightness(140%);
         }
       }
     }
@@ -121,4 +125,28 @@ h1 {
 
 #output {
   font-size: 10px;
+  font-family: "Courier New", Courier, monospace;
+
+  &:not(:empty)::before {
+    content: "Source: ";
+  }
+}
+
+.footer {
+  position: fixed;
+  display: inline-block;
+  bottom: 10px;
+  right: 10px;
+  padding: 7px;
+  border-radius: 10px;
+  background-color: #0a0a0aaa;
+  color: #ddd;
+
+  &:not(:hover) {
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid white;
+  }
 }

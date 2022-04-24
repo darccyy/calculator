@@ -1,24 +1,24 @@
 const buttons = [
-  ["x²", "^"],
-  ["C", () => erase(), "Clear All"],
-  ["🅇", () => backspace(), "Backspace"],
-  ["÷", "/"],
-  7,
-  8,
-  9,
-  ["×", "*"],
-  4,
-  5,
-  6,
-  "-",
-  1,
-  2,
-  3,
-  "+",
-  ".",
-  0,
-  "(",
-  ")",
+  ["x²", "Exponent", "^"],
+  ["C", "Clear All", () => erase()],
+  ["🅇", "Backspace", () => backspace()],
+  ["÷", "Divide", "/"],
+  [7, "Seven"],
+  [8, "Eight"],
+  [9, "Nine"],
+  ["×", "Multiply", "*"],
+  [4, "Four"],
+  [5, "Five"],
+  [6, "Six"],
+  ["-", "Subtract"],
+  [1, "One"],
+  [2, "Two"],
+  [3, "Three"],
+  ["+", "Add"],
+  [".", "Decimal Point"],
+  [0, "Zero"],
+  ["(", "Open bracket"],
+  [")", "Close bracket"],
 ];
 
 // Fix height of textarea bc css cannot :(
@@ -35,20 +35,21 @@ function init() {
   // Create buttons
   $("#buttons").html(
     buttons.map((item, i) => {
-      var text, method, title;
-      if (item === null) {
-        text = "";
-        method = null;
-      } else if (typeof item === "object") {
-        text = item[0];
-        method = item[1] || text;
-        title = item[2];
-      } else {
-        text = item;
-        method = text;
+      if (!item) {
+        return "";
       }
 
-      if (method !== null) {
+      var [text, title, method] = item;
+
+      if (item.length < 1) {
+        text = "⠀";
+        title = "";
+        method = "";
+      } else {
+        if (!method) {
+          method = text;
+        }
+
         if (typeof method === "function") {
           method = method.toString().slice(6);
         } else {
@@ -56,11 +57,12 @@ function init() {
         }
       }
 
-      var isNumber = typeof text === "number" ? "number" : "";
-
-      return `<article><button onclick="${method}; run()" title="${
-        title || ""
-      }" class="${isNumber}">${text}</button></article>`;
+      return `<article><button onclick="${
+        method ? method + "; run()" : ""
+      }" title="${title || ""}" class="${
+        (typeof text === "number" ? "number " : "") +
+        (item.length < 1 ? "blank " : "")
+      }">${text}</button></article>`;
     }),
   );
 }
