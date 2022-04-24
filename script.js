@@ -83,10 +83,17 @@ function run() {
   }
 
   // True mathematics
-  if (math.split(/\(|\)| |\n/).join("") === "2+2") {
-    $("#output").text("Trust me.");
-    $("#answer").text(5);
-    return;
+  var truths = [
+    [21, "You stupid!", ["9+10", "10+9"]],
+    [5, "Trust me.", ["2+2"]],
+  ];
+  var stripped = math.split(/\(|\)| |\n/).join("");
+  for (var i in truths) {
+    if (truths[i][2].includes(stripped)) {
+      $("#output").text(truths[i][1]);
+      $("#answer").text(truths[i][0]);
+      return;
+    }
   }
 
   $("#output").text(JSON.stringify(tree, null, 2));
