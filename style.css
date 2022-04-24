@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body {
   background-color: #111;
   color: white;
@@ -75,8 +76,10 @@ h1 {
   color: inherit;
 }
 .contain #buttons article button:empty {
-  transform: translateY(-8px);
   background-color: #161616;
+}
+.contain #buttons article button:empty::before {
+  content: "⠀";
 }
 .contain #buttons article button.number {
   background-color: #222;

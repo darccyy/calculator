@@ -1,8 +1,8 @@
 const buttons = [
-  "(",
-  ")",
+  ["x²", "^"],
   ["C", () => erase(), "Clear All"],
   ["🅇", () => backspace(), "Backspace"],
+  ["÷", "/"],
   7,
   8,
   9,
@@ -17,8 +17,8 @@ const buttons = [
   "+",
   ".",
   0,
-  null,
-  null,
+  "(",
+  ")",
 ];
 
 function init() {
@@ -129,6 +129,8 @@ function equate(operator, a, b) {
       return a * b;
     case "/":
       return a / b;
+    case "^":
+      return a ** b;
     default:
       throw `Unknown operator '${operator}'`;
   }
@@ -136,7 +138,7 @@ function equate(operator, a, b) {
 
 // Fix order of operations
 function order(tree) {
-  var symbols = "/*-+";
+  var symbols = "^/*-+";
   for (var i in symbols) {
     var symbol = symbols[i];
     //~ console.log("symbol:", symbol);
@@ -218,7 +220,7 @@ function parse(string, iter) {
     }
 
     // Operator
-    if ("+-*/".includes(char)) {
+    if ("+-*/^".includes(char)) {
       // If first token in scope OR after another operator, skip if still building
       if (
         (!tree[tree.length - 1] || tree[tree.length - 1].operator) &&
