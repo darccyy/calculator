@@ -21,10 +21,18 @@ const buttons = [
   ")",
 ];
 
+// Fix height of textarea bc css cannot :(
+function textAreaAdjust() {
+  var element = $("#math")[0];
+  element.style.height = "0px";
+  element.style.height = element.scrollHeight - 10 + "px";
+}
+
 function init() {
   $("#math").text("");
   run();
 
+  // Create buttons
   $("#buttons").html(
     buttons.map((item, i) => {
       var text, method, title;
@@ -59,11 +67,12 @@ function init() {
 
 // Solve given equation
 function run() {
-  //~ console.clear();
+  textAreaAdjust();
+
   $("#error").text("");
   const math = $("#math").val();
 
-  //~ console.log("\nPARSE");
+  // Parse to tree
   try {
     var { tree } = parse(math);
   } catch (err) {
@@ -71,17 +80,23 @@ function run() {
     return;
   }
 
-  //~ console.log(tree);
+  // True mathematics
+  if (math.split(/\(|\)| /).join("") === "2+2") {
+    $("#output").text("Trust me.");
+    $("#answer").text(5);
+    return;
+  }
+
   $("#output").text(JSON.stringify(tree, null, 2));
 
-  //~ console.log("\nSOLVE");
+  // Solve to single value
   try {
     var answer = solve(tree);
   } catch (err) {
     $("#error").text(err);
     return;
   }
-  //~ console.log(answer);
+
   $("#answer").text(answer === null ? "" : answer);
 }
 
@@ -92,7 +107,6 @@ function solve(tree, iter) {
   if (iter >= 20) {
     throw "Too much recursion";
   }
-  //~ console.log("SOLVE:", tree);
 
   switch (tree.length) {
     case 0: {
@@ -101,6 +115,13 @@ function solve(tree, iter) {
 
     case 1: {
       return tree[0].constructor === Array ? solve(tree[0]) : tree[0].value;
+    }
+
+    case 2: {
+      return (
+        (tree[0].constructor === Array ? solve(tree[0]) : tree[0].value) *
+        (tree[1].constructor === Array ? solve(tree[1]) : tree[1].value)
+      );
     }
 
     case 3: {
@@ -119,7 +140,6 @@ function solve(tree, iter) {
 
 // Solve simple equation of 3 parts
 function equate(operator, a, b) {
-  //~ console.log("EQUATE:", operator, a, b);
   switch (operator) {
     case "+":
       return a + b;
@@ -141,17 +161,14 @@ function order(tree) {
   var symbols = "^/*-+";
   for (var i in symbols) {
     var symbol = symbols[i];
-    //~ console.log("symbol:", symbol);
     for (var j = 0; j < tree.length; j++) {
       var arg = tree[j];
       if (arg.operator && arg.value === symbol) {
-        //~ console.log("move:", tree[j - 1], arg, tree[j + 1]);
         tree = [
           ...tree.slice(0, j - 1),
           [tree[j - 1], arg, tree[j + 1]],
           ...tree.slice(j + 2),
         ];
-        //~ console.log(tree);
       }
     }
   }
@@ -165,14 +182,12 @@ function parse(string, iter) {
   if (iter >= 20) {
     throw "Too much recursion";
   }
-  //~ console.log("PARSE:", string);
 
   var tree = [];
   var isEarlyReturn = false; // Set to true in loop on closing bracket; After loop: Error if iter is 0
   var build = ""; // Building a number by char
   for (var i = 0; i < string.length; i++) {
     var char = string[i];
-    //~ console.log("char:", char);
 
     // Space or new line
     if (" \n".includes(char)) {
@@ -190,11 +205,7 @@ function parse(string, iter) {
     // Open bracket
     if (char === "(") {
       // Recurse
-      //~ console.log("     --->>");
       var parsed = parse(string.slice(i + 1), iter + 1);
-      //~ console.log("     <<---");
-      //~ console.log("index:", parsed.index);
-      //~ console.log("(tree):", parsed.tree);
 
       // If nothing in brackets - tree empty
       if (parsed.tree.length < 1) {
@@ -214,7 +225,6 @@ function parse(string, iter) {
 
     // Close bracket
     if (char === ")") {
-      //~ console.log("back:", i);
       isEarlyReturn = true; // See declaration
       break;
     }
@@ -228,7 +238,6 @@ function parse(string, iter) {
       ) {
         // Check for use as positive / negative marker
         if ("+-".includes(char)) {
-          //~ console.log("PLUS/MINUS");
           build += char;
           continue;
         }
@@ -267,10 +276,8 @@ function parse(string, iter) {
   }
 
   // Check if final token is operator
-  //~ console.log("(tree):", tree);
-  //~ console.log(">> (last):", tree[tree.length - 1]);
   if (tree[tree.length - 1]?.operator) {
-    throw `Nothing after operator '${tree[tree.length - 1].value}' in scope`;
+    throw `Nothing after operator '${tree[tree.length - 1].value}'`;
   }
 
   if (isEarlyReturn) {
@@ -280,7 +287,6 @@ function parse(string, iter) {
     return { tree, index: i };
   }
 
-  //~ console.log("Final:", iter);
   if (iter > 0) {
     throw "Open bracket mismatch";
   }
@@ -291,9 +297,11 @@ function parse(string, iter) {
 function concat(char) {
   $("#math").val($("#math").val() + char);
 }
+
 function erase() {
   $("#math").val("");
 }
+
 function backspace() {
   $("#math").val($("#math").val().slice(0, -1));
 }

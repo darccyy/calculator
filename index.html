@@ -24,22 +24,23 @@
   <body onload="init()">
     <h1 title="Now with order of operations!">Calculator</h1>
 
-    <div class="contain">
-      <div class="answer">
-        <span id="error" title="Uh oh! An oopsie!"></span>
-        <p id="answer" title="The answer!"></p>
-      </div>
+    <div class="calculator">
+      <section class="top">
+        <div class="answer">
+          <span id="error" title="Uh oh! An oopsie!"></span>
+          <span id="answer" title="The answer!"></span>
+        </div>
 
-      <input
-        type="text"
-        id="math"
-        oninput="run()"
-        autofocus
-        placeholder="Enter equation"
-        title="Type an equation!"
-      />
+        <textarea
+          id="math"
+          placeholder="Enter equation"
+          title="Type an equation!"
+          autofocus
+          oninput="run()"
+        ></textarea>
+      </section>
 
-      <div id="buttons"></div>
+      <section id="buttons"></section>
     </div>
 
     <pre id="output"></pre>

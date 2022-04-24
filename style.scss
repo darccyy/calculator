@@ -8,69 +8,81 @@ h1 {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.contain {
+.calculator {
   width: 300px;
+  background-color: #333;
+  border-radius: 10px;
 
-  #math {
-    width: calc(100% - 16px);
-    height: calc(1em + 4px);
-    resize: none;
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    font-size: 20px;
-    font-family: inherit;
-    background-color: #222;
-    color: inherit;
+  .top {
+    font-size: 25px;
 
-    &:focus {
-      outline: 1px solid #aaa;
-    }
-  }
-
-  .answer {
-    position: relative;
-
-    #answer {
-      margin-bottom: 5px;
-      padding: 8px;
+    .answer {
+      position: relative;
+      display: inline-block;
+      width: calc(100% - 20px);
+      height: 2ch;
+      margin: 5px;
+      padding: 5px;
       border-radius: 5px;
-      font-size: 20px;
       background-color: #222;
 
-      &:empty::before {
-        content: "...";
-        opacity: 0.5;
+      #error {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 50%;
+        font-style: italic;
+        background-color: initial;
+        color: #faa;
+
+        &:not(:empty) ~ #answer {
+          color: #888;
+        }
+      }
+
+      #answer {
+        &:empty::before {
+          content: "...";
+          opacity: 0.5;
+        }
       }
     }
 
-    #error {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 70%;
-      font-style: italic;
-      background-color: initial;
-      color: #faa;
+    #math {
+      display: inline-block;
+      width: calc(100% - 20px);
+      height: 2ch;
+      resize: none;
+      margin: 0 5px;
+      padding: 5px;
+      overflow-y: auto;
+      overflow: hidden;
+      word-wrap: break-word;
+      border: none;
+      border-radius: 5px;
+      font-size: inherit;
+      font-family: inherit;
+      background-color: #222;
+      color: inherit;
 
-      &:not(:empty) ~ #answer {
-        color: #888;
+      &:focus {
+        outline: 1px solid #aaa;
       }
     }
   }
 
   #buttons {
-    margin-top: 5px;
+    padding: 2.5px;
 
     article {
       display: inline-block;
       border: none;
       margin: 0;
       color: white;
-      width: calc(23%);
+      width: calc(25% - 5px);
       aspect-ratio: 1/1;
-      padding: 1%;
+      padding: 2.5px;
 
       button {
         width: 100%;

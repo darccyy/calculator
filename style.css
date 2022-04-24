@@ -9,64 +9,74 @@ h1 {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.contain {
+.calculator {
   width: 300px;
+  background-color: #333;
+  border-radius: 10px;
 }
-.contain #math {
-  width: calc(100% - 16px);
-  height: calc(1em + 4px);
-  resize: none;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-  font-size: 20px;
-  font-family: inherit;
-  background-color: #222;
-  color: inherit;
+.calculator .top {
+  font-size: 25px;
 }
-.contain #math:focus {
-  outline: 1px solid #aaa;
-}
-.contain .answer {
+.calculator .top .answer {
   position: relative;
-}
-.contain .answer #answer {
-  margin-bottom: 5px;
-  padding: 8px;
+  display: inline-block;
+  width: calc(100% - 20px);
+  height: 2ch;
+  margin: 5px;
+  padding: 5px;
   border-radius: 5px;
-  font-size: 20px;
   background-color: #222;
 }
-.contain .answer #answer:empty::before {
-  content: "...";
-  opacity: 0.5;
-}
-.contain .answer #error {
+.calculator .top .answer #error {
   position: absolute;
-  right: 10px;
+  right: 5px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 70%;
+  font-size: 50%;
   font-style: italic;
   background-color: initial;
   color: #faa;
 }
-.contain .answer #error:not(:empty) ~ #answer {
+.calculator .top .answer #error:not(:empty) ~ #answer {
   color: #888;
 }
-.contain #buttons {
-  margin-top: 5px;
+.calculator .top .answer #answer:empty::before {
+  content: "...";
+  opacity: 0.5;
 }
-.contain #buttons article {
+.calculator .top #math {
+  display: inline-block;
+  width: calc(100% - 20px);
+  height: 2ch;
+  resize: none;
+  margin: 0 5px;
+  padding: 5px;
+  overflow-y: auto;
+  overflow: hidden;
+  word-wrap: break-word;
+  border: none;
+  border-radius: 5px;
+  font-size: inherit;
+  font-family: inherit;
+  background-color: #222;
+  color: inherit;
+}
+.calculator .top #math:focus {
+  outline: 1px solid #aaa;
+}
+.calculator #buttons {
+  padding: 2.5px;
+}
+.calculator #buttons article {
   display: inline-block;
   border: none;
   margin: 0;
   color: white;
-  width: calc(23%);
+  width: calc(25% - 5px);
   aspect-ratio: 1/1;
-  padding: 1%;
+  padding: 2.5px;
 }
-.contain #buttons article button {
+.calculator #buttons article button {
   width: 100%;
   aspect-ratio: 1/1;
   border: none;
@@ -75,19 +85,19 @@ h1 {
   background-color: #1a1a1a;
   color: inherit;
 }
-.contain #buttons article button:empty {
+.calculator #buttons article button:empty {
   background-color: #161616;
 }
-.contain #buttons article button:empty::before {
+.calculator #buttons article button:empty::before {
   content: "⠀";
 }
-.contain #buttons article button.number {
+.calculator #buttons article button.number {
   background-color: #222;
 }
-.contain #buttons article button:not(:empty):hover {
+.calculator #buttons article button:not(:empty):hover {
   filter: brightness(120%);
 }
-.contain #buttons article button:not(:empty):active {
+.calculator #buttons article button:not(:empty):active {
   filter: brightness(140%);
 }
 
