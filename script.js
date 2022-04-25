@@ -217,7 +217,7 @@ function order(tree) {
 var storage;
 function parseLines(string) {
   // Variables, $ is return
-  storage = { $: null, PI: Math.PI };
+  storage = { $: null, PI: Math.PI, E: Math.E };
 
   var lines = string.split(/[\n;]/gm);
   var source = [];
