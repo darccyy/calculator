@@ -91,7 +91,7 @@ function run() {
     [21, "You stupid!", ["9+10", "10+9"]],
     [5, "Trust me.", ["2+2"]],
   ];
-  var stripped = math.replace(/\(|\)| |\n/, "");
+  var stripped = math.replace(/[\(\) \n]/, "");
   for (var i in truths) {
     if (truths[i][2].includes(stripped)) {
       $("#output").text(truths[i][1]);
@@ -191,6 +191,10 @@ function equate(operator, a, b) {
 
 // Fix order of operations
 function order(tree) {
+  if (tree.length < 4) {
+    return tree;
+  }
+
   var symbols = "^/*-+";
   for (var i in symbols) {
     var symbol = symbols[i];
@@ -205,6 +209,7 @@ function order(tree) {
       }
     }
   }
+
   return tree;
 }
 
@@ -214,7 +219,7 @@ function parseLines(string) {
   // Variables, $ is return
   storage = { $: null, PI: Math.PI };
 
-  var lines = string.split(";");
+  var lines = string.split(/[\n;]/gm);
   var source = [];
   for (var i in lines) {
     var line = lines[i];
@@ -225,9 +230,9 @@ function parseLines(string) {
     var params = line.split("=");
     if (
       params.length === 2 &&
-      params[0].replace(/[abcdefghijklmnopqrstuvwxyz]/gim, "") === ""
+      params[0].replace(/[abcdefghijklmnopqrstuvwxyz \n]/gim, "") === ""
     ) {
-      var key = params[0].replace(/ |\n/, "");
+      var key = params[0].replace(/[ \n]/, "");
       if (Object.keys(storage).includes(key)) {
         throw `Pronumeral '${key}' already exists`;
       }
@@ -272,11 +277,16 @@ function parse(string, iter) {
     // Space or new line
     if (" \n".includes(char)) {
       if (build) {
-        var value = parseFloat(build);
-        if (isNaN(value)) {
-          throw `Not a number '${build}'`;
+        if (isPronumeral) {
+          tree.push({ value: build, pronumeral: true });
+        } else {
+          var value = parseFloat(build);
+          if (isNaN(value)) {
+            throw `Not a number '${build}'`;
+          }
+          tree.push({ value });
         }
-        tree.push({ value });
+        isPronumeral = false;
       }
       build = "";
       continue;
@@ -353,7 +363,7 @@ function parse(string, iter) {
     }
 
     // Pronumeral
-    if (/[abcdefghiklmnopqrstuvwxyz]/gim.test(char)) {
+    if (/[abcdefghiklmnopqrstuvwxyz \n]/gim.test(char)) {
       if (build && !isPronumeral) {
         throw `Cannot use character '${char}' in number`;
       }
