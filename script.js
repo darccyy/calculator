@@ -23,16 +23,28 @@ const buttons = [
 
 // Fix height of textarea bc css cannot :(
 function textAreaAdjust() {
-  var element = $("#math")[0];
-  element.style.height = "0px";
-  element.style.height = element.scrollHeight - 10 + "px";
+  var element = $("#math");
+  element.css("height", "0px");
+  element.css("height", element[0].scrollHeight - 10 + "px");
+}
+
+// Fix font size of answer
+function answerFontSizeAdjust() {
+  var element = $("#answer");
+  element.css(
+    "font-size",
+    100 - Math.max(0, element.text().length - 18) * 4 + "%",
+  );
 }
 
 function init() {
   $("#math").text("");
+  createButtons();
   run();
+}
 
-  // Create buttons
+// Create buttons
+function createButtons() {
   $("#buttons").html(
     buttons.map((item, i) => {
       if (!item) {
@@ -74,20 +86,12 @@ function run() {
   $("#error").text("");
   const math = $("#math").val();
 
-  // Parse to tree
-  try {
-    var { tree } = parse(math);
-  } catch (err) {
-    $("#error").text(err);
-    return;
-  }
-
   // True mathematics
   var truths = [
     [21, "You stupid!", ["9+10", "10+9"]],
     [5, "Trust me.", ["2+2"]],
   ];
-  var stripped = math.split(/\(|\)| |\n/).join("");
+  var stripped = math.replace(/\(|\)| |\n/, "");
   for (var i in truths) {
     if (truths[i][2].includes(stripped)) {
       $("#output").text(truths[i][1]);
@@ -96,17 +100,22 @@ function run() {
     }
   }
 
-  $("#output").text(JSON.stringify(tree, null, 2));
-
-  // Solve to single value
+  // Parse to tree
   try {
-    var answer = solve(tree);
+    var answer = parseLines(math);
   } catch (err) {
     $("#error").text(err);
     return;
   }
 
+  if (answer === Infinity) {
+    $("#error").text("Maximum value");
+  } else if (answer === -Infinity) {
+    $("#error").text("Minimum value");
+  }
+
   $("#answer").text(answer === null ? "" : answer);
+  answerFontSizeAdjust();
 }
 
 // Solve parsed equation
@@ -117,27 +126,28 @@ function solve(tree, iter) {
     throw "Too much recursion";
   }
 
+  if (!storage) {
+    throw "Undefined storage";
+  }
+
   switch (tree.length) {
     case 0: {
       return null;
     }
 
     case 1: {
-      return tree[0].constructor === Array ? solve(tree[0]) : tree[0].value;
+      return getItemValue(tree[0], iter);
     }
 
     case 2: {
-      return (
-        (tree[0].constructor === Array ? solve(tree[0]) : tree[0].value) *
-        (tree[1].constructor === Array ? solve(tree[1]) : tree[1].value)
-      );
+      return getItemValue(tree[0], iter) * getItemValue(tree[1], iter);
     }
 
     case 3: {
       return equate(
         tree[1].value,
-        tree[0].constructor === Array ? solve(tree[0]) : tree[0].value,
-        tree[2].constructor === Array ? solve(tree[2]) : tree[2].value,
+        getItemValue(tree[0], iter),
+        getItemValue(tree[2], iter),
       );
     }
 
@@ -145,6 +155,20 @@ function solve(tree, iter) {
       throw "Invalid format";
     }
   }
+}
+
+// Get parsed value of item in tree
+function getItemValue(item, iter) {
+  if (item.constructor === Array) {
+    return solve(item, iter + 1);
+  }
+  if (item.pronumeral) {
+    if (storage[item.value] || storage[item.value] === 0) {
+      return storage[item.value];
+    }
+    throw `Unknown pronumeral '${item.value}'`;
+  }
+  return item.value;
 }
 
 // Solve simple equation of 3 parts
@@ -184,6 +208,49 @@ function order(tree) {
   return tree;
 }
 
+// Parse multiple lines
+var storage;
+function parseLines(string) {
+  // Variables, $ is return
+  storage = { $: null, PI: Math.PI };
+
+  var lines = string.split(";");
+  var source = [];
+  for (var i in lines) {
+    var line = lines[i];
+    if (!line) {
+      continue;
+    }
+
+    var params = line.split("=");
+    if (
+      params.length === 2 &&
+      params[0].replace(/[abcdefghijklmnopqrstuvwxyz]/gim, "") === ""
+    ) {
+      var key = params[0].replace(/ |\n/, "");
+      if (Object.keys(storage).includes(key)) {
+        throw `Pronumeral '${key}' already exists`;
+      }
+      var tree = parse(params[1]).tree;
+      source.push({ set: key, tree });
+      var value = solve(tree);
+      if (!value && value !== 0) {
+        throw "Value undefined";
+      }
+      storage[key] = value;
+      storage.$ = value;
+      continue;
+    }
+
+    var parsed = parse(line);
+    source.push(parsed.tree);
+    storage.$ = solve(parsed.tree);
+  }
+
+  $("#output").text(JSON.stringify(source, null, 2));
+  return storage.$;
+}
+
 // Parse raw equation
 function parse(string, iter) {
   // Prevent infinite loop
@@ -191,10 +258,14 @@ function parse(string, iter) {
   if (iter >= 20) {
     throw "Too much recursion";
   }
+  if (!storage) {
+    throw "Undefined storage";
+  }
 
   var tree = [];
   var isEarlyReturn = false; // Set to true in loop on closing bracket; After loop: Error if iter is 0
   var build = ""; // Building a number by char
+  var isPronumeral = false; // If build is pronumeral
   for (var i = 0; i < string.length; i++) {
     var char = string[i];
 
@@ -256,11 +327,16 @@ function parse(string, iter) {
 
       // Add build and operator
       if (build) {
-        var value = parseFloat(build);
-        if (isNaN(value)) {
-          throw `Not a number '${build}'`;
+        if (isPronumeral) {
+          tree.push({ value: build, pronumeral: true });
+        } else {
+          var value = parseFloat(build);
+          if (isNaN(value)) {
+            throw `Not a number '${build}'`;
+          }
+          tree.push({ value });
         }
-        tree.push({ value });
+        isPronumeral = false;
       }
       tree.push({ operator: true, value: char });
       build = "";
@@ -269,7 +345,20 @@ function parse(string, iter) {
 
     // Number
     if ("0123456789.".includes(char)) {
+      if (isPronumeral) {
+        throw `Cannot use number '${char}' in pronumeral`;
+      }
       build += char;
+      continue;
+    }
+
+    // Pronumeral
+    if (/[abcdefghiklmnopqrstuvwxyz]/gim.test(char)) {
+      if (build && !isPronumeral) {
+        throw `Cannot use character '${char}' in number`;
+      }
+      build += char;
+      isPronumeral = true;
       continue;
     }
 
@@ -277,11 +366,16 @@ function parse(string, iter) {
   }
   // Final number in scope
   if (build) {
-    var value = parseFloat(build);
-    if (isNaN(value)) {
-      throw `Not a number '${build}'`;
+    if (isPronumeral) {
+      tree.push({ value: build, pronumeral: true });
+    } else {
+      var value = parseFloat(build);
+      if (isNaN(value)) {
+        throw `Not a number '${build}'`;
+      }
+      tree.push({ value });
     }
-    tree.push({ value });
+    isPronumeral = false;
   }
 
   // Check if final token is operator

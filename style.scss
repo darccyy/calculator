@@ -25,6 +25,7 @@ body {
       height: 2ch;
       margin: 5px;
       padding: 5px;
+      font-size: 100%;
       border-radius: 5px;
       background-color: #222;
 
@@ -37,13 +38,17 @@ body {
         font-style: italic;
         background-color: initial;
         color: #faa;
+        background-color: inherit;
+        z-index: 50;
 
         &:not(:empty) ~ #answer {
-          color: #888;
+          opacity: 0.5;
         }
       }
 
       #answer {
+        z-index: 40;
+
         &:empty::before {
           content: "...";
           opacity: 0.5;

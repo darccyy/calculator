@@ -27,6 +27,7 @@ body {
   height: 2ch;
   margin: 5px;
   padding: 5px;
+  font-size: 100%;
   border-radius: 5px;
   background-color: #222;
 }
@@ -39,9 +40,14 @@ body {
   font-style: italic;
   background-color: initial;
   color: #faa;
+  background-color: inherit;
+  z-index: 50;
 }
 .calculator .top .answer #error:not(:empty) ~ #answer {
-  color: #888;
+  opacity: 0.5;
+}
+.calculator .top .answer #answer {
+  z-index: 40;
 }
 .calculator .top .answer #answer:empty::before {
   content: "...";
