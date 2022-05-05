@@ -298,7 +298,7 @@ function parse(string, iter) {
       var parsed = parse(string.slice(i + 1), iter + 1);
 
       // If nothing in brackets - tree empty
-      if (parsed.tree.length < 1) {
+      if (parsed.tree.length < 1) { 
         throw "Empty brackets";
       }
       tree.push(parsed.tree);
@@ -397,7 +397,7 @@ function parse(string, iter) {
     if (iter <= 0) {
       throw "Close bracket mismatch";
     }
-    return { tree, index: i };
+    return { tree: order(tree), index: i };
   }
 
   if (iter > 0) {
